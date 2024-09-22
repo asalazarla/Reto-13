@@ -1,6 +1,7 @@
 # Reto-13
 
 Este repo tiene como fin dar solución al reto 13 propuesto en la clase de Diccionarios.
+
 **1. Desarrollar un algoritmo que imprima de manera ascendente los valores (todos del mismo tipo) de un diccionario.**
 ```python
 # Definir un diccionario con valores del mismo tipo (números)
@@ -24,7 +25,7 @@ for valor in valores_ordenados:
     print(valor)
 ```
 
-**2.Desarrollar una función que reciba dos diccionarios como parámetros y los mezcle, es decir, que se construya un nuevo diccionario con las llaves de los dos diccionarios; si hay una clave repetida en ambos diccionarios, se debe asignar el valor que tenga la clave en el primer diccionario
+**2.Desarrollar una función que reciba dos diccionarios como parámetros y los mezcle, es decir, que se construya un nuevo diccionario con las llaves de los dos diccionarios; si hay una clave repetida en ambos diccionarios, se debe asignar el valor que tenga la clave en el primer diccionario.**
 ```python
 def mezclar_diccionarios(dic1, dic2):
     # Crear un nuevo diccionario que inicialmente contiene todos los items de dic2
@@ -46,7 +47,7 @@ resultado = mezclar_diccionarios(diccionario1, diccionario2)
 print("Diccionario mezclado:", resultado)
 ```
 
-3. Dado el JSON:
+**3. Dado el JSON:**
 ```python
 {
 	"jadiazcoronado":{
@@ -198,7 +199,58 @@ data = json.loads(jsonString)
 revisar_alertas(data)
 ```
 
+**5. A través de un programa conectese a al menos 3 [API's ](https://apipheny.io/free-api/), obtenga el JSON, imprimalo y extraiga los pares de llave : valor.**
 
+```python
+import requests
+import json
+
+# Función para obtener los datos de una API y extraer los pares clave-valor
+def obtener_json_y_extraer_pares(url):
+    try:
+        # Realizar la solicitud GET a la API
+        response = requests.get(url)
+        
+        # Verificar si la solicitud fue exitosa
+        if response.status_code == 200:
+            # Convertir la respuesta a JSON
+            data = response.json()
+            
+            # Imprimir el JSON completo
+            print(f"\nDatos de la API {url}:\n")
+            print(json.dumps(data, indent=4))  # Imprimir en formato legible
+            
+            # Extraer e imprimir los pares llave-valor
+            print("\nPares llave-valor extraídos:\n")
+            extraer_pares_llave_valor(data)
+        else:
+            print(f"Error al conectar con la API {url}, código de estado: {response.status_code}")
+    except Exception as e:
+        print(f"Ocurrió un error: {e}")
+
+# Función recursiva para extraer los pares llave-valor
+def extraer_pares_llave_valor(data, prefijo=""):
+    if isinstance(data, dict):  # Si es un diccionario
+        for llave, valor in data.items():
+            nueva_llave = f"{prefijo}.{llave}" if prefijo else llave
+            extraer_pares_llave_valor(valor, nueva_llave)
+    elif isinstance(data, list):  # Si es una lista
+        for i, item in enumerate(data):
+            extraer_pares_llave_valor(item, f"{prefijo}[{i}]")
+    else:  # Si es un valor simple
+        print(f"{prefijo}: {valor}")
+
+# URLs de las APIs seleccionadas
+apis = [
+    "https://catfact.ninja/fact",                # API de hechos curiosos sobre gatos
+    "https://api.coindesk.com/v1/bpi/currentprice.json",  # API de precios actuales de Bitcoin
+    "https://api.agify.io?name=michael"          # API para predecir la edad según el nombre
+]
+
+# Llamar a la función para cada API
+for api in apis:
+    obtener_json_y_extraer_pares(api)
+```
 
 
 
